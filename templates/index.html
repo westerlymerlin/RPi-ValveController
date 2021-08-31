@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="refresh" content="30" >
+<title>London Geochronology Centre - Helium Line - Valve Controller</title>
+<link href="{{ url_for('static',filename='css/text.css') }}" rel="stylesheet" type="text/css">
+<link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+</head>
+<body>
+	  <section class="banner">
+		  <div >
+              <P class="logo">London Geochronology Centre - Valve Controller - Server Status &nbsp CPU {{cputemperature}}&deg;C</P>
+              <p class="breadcrumbtext"><a href = "/" class="breadcrumblink">Return to index</a> &nbsp|&nbsp
+              <a href = "/pylog" class="breadcrumblink">Valve-Control Log</a> &nbsp|&nbsp
+              <a href = "/guaccesslog" class="breadcrumblink">Website Access Log</a> &nbsp|&nbsp
+              <a href = "/guerrorlog" class="breadcrumblink">Website Error Log</a> &nbsp|&nbsp
+              <a href = {{ url_for('static',filename='systemhalt.html') }} class="breadcrumblink">Turn off the Raspberry Pi</a></p>
+          </div>
+  </section>
+<section class="container2">
+    <p> Valve Status</p>
+        <table border = 1px cellspacing = 0>
+         <thead>
+         <td class="tabledataleft"><B>Valve</B></td>
+            <td class="tabledataleft"><B>Description</B></td>
+            <td class="tabledataleft"><B>Status</B></td>
+         </thead>
+         {% for valve in valves %}
+            <tr>
+                    <td class="tabledataleft">Valve {{valve['id']}}</td>
+                    <td class="tabledataleft">{{valve['description']}}</td>
+                    <td class="tabledataleft">{{valve['status']}}</td>
+            </tr>
+         {% endfor %}
+            <tr>
+                    <td class="tabledataleft">Laser TTL</td>
+                <td class="tabledataleft">CO<sub>2</sub> Laser TTL signal</td>
+                    <td class="tabledataleft">{{laser['status']}}</td>
+            </tr>
+      </table>
+    <p>&nbsp</p>
+	</section>
+  <section class="banner">
+ <div class ="copyright">&copy;2020 - <strong>London Geochronology Centre</strong></div>
+	  </section>
+</body>
+</html>
