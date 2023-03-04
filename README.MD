@@ -13,6 +13,21 @@
 
 `Valve Control Circuit.fzz`     contains the schematics and PCB layout for use in the Fritzing application https://fritzing.org/
 
+### JSON Commands
+ 
+`{'status', '1'}` Return the ststus of all valves
+
+`{'valveN', 'open'}` Open valve N
+
+`{'valveN', 'close'}` Close valve N
+
+`{'pipetteN', 'load'}` open the valve next to the tank to fill the pipette N    
+
+`{'pipetteN', 'unload'}` open the valve next to the line to empty the pipette N   
+
+`{'pipetteN', 'close'}` close both valves on teh pipette N    
+
+`{'closeallvalves', 1}` close all valves and pipettes   
 
 
 

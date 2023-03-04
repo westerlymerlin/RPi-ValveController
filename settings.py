@@ -1,6 +1,6 @@
 import json
 
-version = '1.1.3'
+version = '1.1.4'
 settings = {}
 
 
@@ -16,6 +16,10 @@ def initialise():
     settings['logging']['logappname'] = 'Valve-Controller-Py'
     settings['logging']['gunicornpath'] = './logs/'
     settings['logging']['cputemp'] = '/sys/class/thermal/thermal_zone0/temp'
+    settings['laser'] = {}
+    settings['laser']['power'] = 45.0
+    settings['laser']['port'] = '/dev/ttyUSB0'
+    settings['laser']['baud'] = 9600
     with open('settings.json', 'w') as outfile:
         json.dump(settings, outfile, indent=4, ensure_ascii=True, sort_keys=True)
 
