@@ -29,6 +29,7 @@
 
 `{'closeallvalves', 1}` close all valves and pipettes   
 
+`{'restart', 'pi'}` Restart the raspberry pi after a 15 second delay   
 
 
 

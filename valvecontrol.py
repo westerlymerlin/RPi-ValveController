@@ -3,6 +3,7 @@ from time import sleep
 from logmanager import *
 from settings import version
 from threading import Timer
+import os
 
 
 
@@ -132,6 +133,11 @@ def parsecontrol(item, command):
                 laser(0)
         elif item == 'closeallvalves':
             allclose()
+        elif item == 'restart':
+            if command == 'pi':
+                print('Restart command recieved: system will restart in 15 seconds')
+                timerthread = Timer(15, reboot)
+                timerthread.start()
     except ValueError:
         print('incorrect json message')
     except IndexError:
@@ -234,6 +240,10 @@ def laserstatus():
         return {'laser': 0, 'status': 'on'}
     else:
         return {'laser': 0, 'status': 'off'}
+
+def reboot():
+    print('System is restarting now')
+    os.system('sudo reboot')
 
 
 GPIO.output(12, 1)   # set ready
