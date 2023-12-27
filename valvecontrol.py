@@ -1,13 +1,13 @@
 from RPi import GPIO
 from time import sleep
-from logmanager import *
+from logmanager import logger
 from settings import version
 from threading import Timer
 import os
 
 
 
-print('Application starting')
+logger.info('Application starting')
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 channellist = [23, 17, 13, 19, 18, 27, 9, 24, 22, 11, 21, 26, 20]
@@ -101,9 +101,9 @@ def parsecontrol(item, command):
                 elif command == 'close':
                     valveclose(valve)
                 else:
-                    print('bad valve command')
+                    logger.warning('bad valve command')
             else:
-                print('bad valve number')
+                logger.warning('bad valve number')
         elif item[:7] == 'pipette':
             pipette = int(item[7:])
             if pipette == 1:
@@ -114,7 +114,7 @@ def parsecontrol(item, command):
                 elif command == 'close':
                     he4pipetteclose()
                 else:
-                    print('bad pipette command')
+                    logger.warning('bad pipette command')
             elif pipette == 2:
                 if command == 'load':
                     he3pipetteload()
@@ -123,45 +123,40 @@ def parsecontrol(item, command):
                 elif command == 'close':
                     he3pipetteclose()
                 else:
-                    print('bad pipette command')
+                    logger.warning('bad pipette command')
             else:
-                print('bad pipette number')
-        elif item == 'laser':
-            if command == 'on':
-                laser(1)
-            else:
-                laser(0)
+                logger.warning('bad pipette number')
         elif item == 'closeallvalves':
             allclose()
         elif item == 'restart':
             if command == 'pi':
-                print('Restart command recieved: system will restart in 15 seconds')
+                logger.warning('Restart command recieved: system will restart in 15 seconds')
                 timerthread = Timer(15, reboot)
                 timerthread.start()
     except ValueError:
-        print('incorrect json message')
+        logger.warning('incorrect json message')
     except IndexError:
-        print('bad valve number')
+        logger.warning('bad valve number')
 
 
 def valveopen(valveid):
     valve = [valve for valve in valves if valve['id'] == valveid]
     if GPIO.input([valvex for valvex in valves if valvex['id'] == valve[0]['excluded']][0]['gpio']) == 1:
-        print('cannot open valve as the excluded one is also open valve %s' % valveid)
+        logger.warning('cannot open valve as the excluded one is also open valve %s' % valveid)
     else:
         GPIO.output(valve[0]['gpio'], 1)
-        print('Valve %s opened' % valveid)
+        logger.info('Valve %s opened' % valveid)
 
 
 def valveclose(valveid):
     valve = [valve for valve in valves if valve['id'] == valveid]
     GPIO.output(valve[0]['gpio'], 0)
-    print('Valve %s closed' % valveid)
+    logger.info('Valve %s closed' % valveid)
 
 
 def allclose():
     GPIO.output(channellist, 0)
-    print('All Valves Closed')
+    logger.info('All Valves Closed')
 
 
 def he3pipetteload():
@@ -205,24 +200,12 @@ def status(value):
         return 'open'
 
 
-def laser(state):
-    if state == 1:
-        print('Laser is on')
-        GPIO.output(20, 1)
-        # Start a 5 minute timeer for the laser, if the laser is not shutdown by PyMS then this timer will shut it down
-        timerthread = Timer(300, lambda: laser(0))
-        timerthread.start()
-    else:
-        print('Laser is off')
-        GPIO.output(20, 0)
-
 
 def valvestatus():
     statuslist = []
     for valve in valves:
         if valve['id'] > 0:
             statuslist.append({'valve': valve['id'], 'status': status(GPIO.input(valve['gpio']))})
-    statuslist.append(laserstatus())
     return statuslist
 
 
@@ -235,17 +218,11 @@ def httpstatus():
     return statuslist
 
 
-def laserstatus():
-    if GPIO.input(20) == 1:
-        return {'laser': 0, 'status': 'on'}
-    else:
-        return {'laser': 0, 'status': 'off'}
-
 def reboot():
-    print('System is restarting now')
+    logger.warning('System is restarting now')
     os.system('sudo reboot')
 
 
 GPIO.output(12, 1)   # set ready
-print('Running version %s' % version)
-print('Application ready')
+logger.info('Running version %s' % version)
+logger.info('Application ready')
