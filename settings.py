@@ -12,7 +12,7 @@ def initialise():  # These are the default values written to the settings.json f
     return isettings
 
 def writesettings():
-    settings['LastSave'] = datetime.now().strftime('%d/%m/%y %H:%M:%S')
+    settings['LastSave'] = datetime.now().strftime('%d/%m/%Y %H:%M:%S')
     with open('settings.json', 'w') as outfile:
         json.dump(settings, outfile, indent=4, sort_keys=True)
 
