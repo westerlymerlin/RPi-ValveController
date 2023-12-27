@@ -4,9 +4,9 @@
 echo "
 **** pulling the master branch from github ****
 "
-cd /home/tompi/github/UCL-tombola/
+cd ~/github/UCL-RPi-ValveController/
 git pull origin master
-cd /home/tompi/
+cd ~
 
 echo "
 ******** git pull completed ********
