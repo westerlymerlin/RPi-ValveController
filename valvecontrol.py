@@ -1,9 +1,13 @@
-from RPi import GPIO
+"""
+Main valve controller module, operates the valves via the Raspberry Pi GPIO
+"""
+
 from time import sleep
-from logmanager import logger
-from settings import version
 from threading import Timer
 import os
+from RPi import GPIO
+from logmanager import logger
+from settings import VERSION
 
 
 
@@ -91,6 +95,8 @@ valves = [
 
 
 def parsecontrol(item, command):
+    """Parser that recieves messages from the API or web page posts and directs
+    messages to the correct function"""
     # print('%s : %s' % (item, command))
     try:
         if item[:5] == 'valve':
@@ -140,60 +146,70 @@ def parsecontrol(item, command):
 
 
 def valveopen(valveid):
+    """Open the valve specified"""
     valve = [valve for valve in valves if valve['id'] == valveid]
     if GPIO.input([valvex for valvex in valves if valvex['id'] == valve[0]['excluded']][0]['gpio']) == 1:
-        logger.warning('cannot open valve as the excluded one is also open valve %s' % valveid)
+        logger.warning('cannot open valve as the excluded one is also open valve %s', valveid)
     else:
         GPIO.output(valve[0]['gpio'], 1)
-        logger.info('Valve %s opened' % valveid)
+        logger.info('Valve %s opened', valveid)
 
 
 def valveclose(valveid):
+    """Close the valve specified"""
     valve = [valve for valve in valves if valve['id'] == valveid]
     GPIO.output(valve[0]['gpio'], 0)
-    logger.info('Valve %s closed' % valveid)
+    logger.info('Valve %s closed', valveid)
 
 
 def allclose():
+    """Close all valves"""
     GPIO.output(channellist, 0)
     logger.info('All Valves Closed')
 
 
 def he3pipetteload():
+    """load the 3He pipette"""
     valveclose(3)
     sleep(1)
     valveopen(4)
 
 
 def he3pipetteclose():
+    """Close the 3He Pipette"""
     valveclose(3)
     valveclose(4)
 
 
 def he3pipetteunload():
+    """Unload the 3He pipette"""
     valveclose(4)
     sleep(1)
     valveopen(3)
 
 
 def he4pipetteload():
+    """Load the 4He pipette"""
     valveclose(2)
     sleep(1)
     valveopen(1)
 
 
 def he4pipetteclose():
+    """Close the 4He pipette"""
     valveclose(2)
     valveclose(1)
 
 
 def he4pipetteunload():
+    """Unload the 4He pipette"""
     valveclose(1)
     sleep(1)
     valveopen(2)
 
 
 def status(value):
+    """Meaningful value name for the specified valve"""
     if value == 0:
         return 'closed'
     else:
@@ -202,6 +218,7 @@ def status(value):
 
 
 def valvestatus():
+    """Return the status of all valves as a jason message"""
     statuslist = []
     for valve in valves:
         if valve['id'] > 0:
@@ -210,6 +227,7 @@ def valvestatus():
 
 
 def httpstatus():
+    """Statud message formetted for the web status page"""
     statuslist = []
     for valve in valves:
         if valve['id'] > 0:
@@ -219,10 +237,11 @@ def httpstatus():
 
 
 def reboot():
+    """API call to reboot the Raspberry Pi"""
     logger.warning('System is restarting now')
     os.system('sudo reboot')
 
 
 GPIO.output(12, 1)   # set ready
-logger.info('Running version %s' % version)
+logger.info('Running version %s', VERSION)
 logger.info('Application ready')
