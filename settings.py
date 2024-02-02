@@ -6,7 +6,7 @@ has appeared it will creat from the defaults in the initialise function.
 import json
 from datetime import datetime
 
-VERSION = '2.0.5'
+VERSION = '2.0.6'
 
 def initialise():
     """Setup the settings structure with default values"""
