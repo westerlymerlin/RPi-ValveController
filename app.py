@@ -7,27 +7,49 @@ from logmanager import  logger
 from valvecontrol import httpstatus, valvestatus, parsecontrol
 from settings import settings, VERSION
 
-app = Flask(__name__)\
+logger.info('Starting Valve Controller web app version %s', VERSION)
+logger.info('Api-Key = %s', settings['api-key'])
+app = Flask(__name__)
+
+
+def read_log_from_file(file_path):
+    """Read a log from a file and reverse the order of the lines so newest is at the top"""
+    with open(file_path, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+    return list(reversed(lines))
+
+
+def read_cpu_temperature():
+    """Read the CPU temperature"""
+    with open(settings['cputemp'], 'r', encoding='utf-8') as f:
+        log = f.readline()
+    return round(float(log) / 1000, 1)
 
 
 @app.route('/')
 def index():
-    """Main web page handler, shows status page via the index.html template"""
-    with open(settings['cputemp'], 'r', encoding='utf-8') as f:
-        log = f.readline()
-    f.close()
-    cputemperature = round(float(log)/1000, 1)
-    return render_template('index.html', valves=httpstatus(), cputemperature=cputemperature, version=VERSION)
+    """Main web status page"""
+    cputemperature = read_cpu_temperature()
+    return render_template('index.html', valves=httpstatus(), cputemperature=cputemperature,
+                           version=VERSION)
 
 
 @app.route('/api', methods=['POST'])
 def api():
     """API Endpoint for programatic access - needs request data to be posted in a json file"""
     try:
-        item = request.json['item']
-        command = request.json['command']
-        parsecontrol(item, command)
-        return jsonify(valvestatus()), 201
+        logger.debug('API headers: %s', request.headers)
+        logger.debug('API request: %s', request.json)
+        if 'Api-Key' in request.headers.keys():  # check api key exists
+            if request.headers['api-key'] == settings['api-key']:  # check for correct API key
+                item = request.json['item']
+                command = request.json['command']
+                parsecontrol(item, command)
+                return jsonify(valvestatus()), 201
+            logger.warning('API: access attempt using an invalid token from %s', request.headers[''])
+            return 'access token(s) unuthorised', 401
+        logger.warning('API: access attempt without a token from  %s', request.headers['X-Forwarded-For'])
+        return 'access token(s) incorrect', 401
     except KeyError:
         logger.warning('API: Badly formed json message')
         return "badly formed json message", 201
@@ -35,64 +57,41 @@ def api():
 
 @app.route('/pylog')
 def showplogs():
-    """Displays the application log file via the logs.html template"""
-    with open(settings['cputemp'], 'r', encoding='utf-8') as f:
-        log = f.readline()
-    f.close()
-    cputemperature = round(float(log)/1000, 1)
-    with open(settings['logfilepath'], 'r', encoding='utf-8') as f:
-        log = f.readlines()
-    f.close()
-    log.reverse()
-    logs = tuple(log)
-    return render_template('logs.html', rows=logs, log='Valve-Control log', cputemperature=cputemperature,
-                           version=VERSION)
+    """Show the Application log"""
+    cputemperature = read_cpu_temperature()
+    logs = read_log_from_file(settings['logfilepath'])
+    return render_template('logs.html', rows=logs, log='Valve-Control log',
+                           cputemperature=cputemperature, version=VERSION)
 
 
 @app.route('/guaccesslog')
 def showgalogs():
-    """Displays the Gunicorn access log file via the logs.html template"""
-    with open(settings['cputemp'], 'r', encoding='utf-8') as f:
-        log = f.readline()
-    f.close()
-    cputemperature = round(float(log)/1000, 1)
-    with open(settings['gunicornpath'] + 'gunicorn-access.log', 'r', encoding='utf-8') as f:
-        log = f.readlines()
-    f.close()
-    log.reverse()
-    logs = tuple(log)
-    return render_template('logs.html', rows=logs, log='Gunicorn Access Log', cputemperature=cputemperature,
-                           version=VERSION)
+    """"Show the Gunicorn Access Log"""
+    cputemperature = read_cpu_temperature()
+    logs = read_log_from_file(settings['gunicornpath'] + 'gunicorn-access.log')
+    return render_template('logs.html', rows=logs, log='Gunicorn Access Log',
+                           cputemperature=cputemperature, version=VERSION)
 
 
 @app.route('/guerrorlog')
 def showgelogs():
-    """Displays the Gunicorn error log file via the logs.html template"""
-    with open(settings['cputemp'], 'r', encoding='utf-8') as f:
-        log = f.readline()
-    f.close()
-    cputemperature = round(float(log)/1000, 1)
-    with open(settings['gunicornpath'] + 'gunicorn-error.log', 'r', encoding='utf-8') as f:
-        log = f.readlines()
-    f.close()
-    log.reverse()
-    logs = tuple(log)
-    return render_template('logs.html', rows=logs, log='Gunicorn Error Log', cputemperature=cputemperature,
-                           version=VERSION)
+    """"Show the Gunicorn Errors Log"""
+    cputemperature = read_cpu_temperature()
+    logs = read_log_from_file(settings['gunicornpath'] + 'gunicorn-error.log')
+    return render_template('logs.html', rows=logs, log='Gunicorn Error Log',
+                           cputemperature=cputemperature, version=VERSION)
 
 
-@app.route('/syslog')  # display the raspberry pi system log
+@app.route('/syslog')
 def showslogs():
-    """Displays the last 200 lines of the system log via the logs.html template"""
-    with open(settings['cputemp'], 'r', encoding='utf-8') as f:
-        log = f.readline()
-    f.close()
-    cputemperature = round(float(log)/1000, 1)
+    """Show the system log"""
+    cputemperature = read_cpu_temperature()
     log = subprocess.Popen('journalctl -n 200', shell=True,
                            stdout=subprocess.PIPE).stdout.read().decode(encoding='utf-8')
     logs = log.split('\n')
     logs.reverse()
-    return render_template('logs.html', rows=logs, log='System Log', cputemperature=cputemperature, version=VERSION)
+    return render_template('logs.html', rows=logs, log='System Log', cputemperature=cputemperature,
+                           version=VERSION)
 
 
 if __name__ == '__main__':

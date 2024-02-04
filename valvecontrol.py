@@ -7,8 +7,6 @@ from threading import Timer
 import os
 from RPi import GPIO
 from logmanager import logger
-from settings import VERSION
-
 
 
 logger.info('Application starting')
@@ -243,5 +241,4 @@ def reboot():
 
 
 GPIO.output(12, 1)   # set ready
-logger.info('Running version %s', VERSION)
 logger.info('Application ready')
