@@ -210,8 +210,7 @@ def status(value):
     """Meaningful value name for the specified valve"""
     if value == 0:
         return 'closed'
-    else:
-        return 'open'
+    return 'open'
 
 
 
