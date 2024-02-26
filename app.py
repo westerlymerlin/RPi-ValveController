@@ -46,13 +46,13 @@ def api():
                 command = request.json['command']
                 parsecontrol(item, command)
                 return jsonify(valvestatus()), 201
-            logger.warning('API: access attempt using an invalid token from %s', request.headers[''])
+            logger.warning('API: access attempt using an invalid token')
             return 'access token(s) unuthorised', 401
-        logger.warning('API: access attempt without a token from  %s', request.headers['X-Forwarded-For'])
+        logger.warning('API: access attempt without a token')
         return 'access token(s) incorrect', 401
     except KeyError:
         logger.warning('API: Badly formed json message')
-        return "badly formed json message", 201
+        return "badly formed json message", 401
 
 
 @app.route('/pylog')
