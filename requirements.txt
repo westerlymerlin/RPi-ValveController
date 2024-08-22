@@ -1,2 +1,3 @@
 flask
-rpi.gpio
+gunicorn
+rpi.lgpio
