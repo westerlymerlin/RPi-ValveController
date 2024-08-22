@@ -5,7 +5,7 @@ import subprocess
 from flask import Flask, render_template, jsonify, request
 from logmanager import  logger
 from valvecontrol import httpstatus, valvestatus, parsecontrol
-from settings import settings, VERSION
+from app_control import settings, VERSION
 
 logger.info('Starting Valve Controller web app version %s', VERSION)
 logger.info('Api-Key = %s', settings['api-key'])
