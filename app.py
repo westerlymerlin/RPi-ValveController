@@ -2,6 +2,7 @@
 This is the main flask application - called by Gunicorn
 """
 import subprocess
+from threading import enumerate as enumerate_threads
 from flask import Flask, render_template, jsonify, request
 from logmanager import  logger
 from valvecontrol import httpstatus, valvestatus, parsecontrol
@@ -26,12 +27,20 @@ def read_cpu_temperature():
     return round(float(log) / 1000, 1)
 
 
+def threadlister():
+    """Get a list of all threads running"""
+    appthreads = []
+    for appthread in enumerate_threads():
+        appthreads.append([appthread.name, appthread.native_id])
+    return appthreads
+
+
 @app.route('/')
 def index():
     """Main web status page"""
     cputemperature = read_cpu_temperature()
     return render_template('index.html', valves=httpstatus(), cputemperature=cputemperature,
-                           version=VERSION)
+                           version=VERSION, threads=threadlister())
 
 
 @app.route('/api', methods=['POST'])
@@ -92,6 +101,7 @@ def showslogs():
     logs.reverse()
     return render_template('logs.html', rows=logs, log='System Log', cputemperature=cputemperature,
                            version=VERSION)
+
 
 
 if __name__ == '__main__':

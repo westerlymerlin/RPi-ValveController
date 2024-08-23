@@ -35,6 +35,15 @@
                     <td class="tabledataleft">{{valve['status']}}</td>
             </tr>
          {% endfor %}
+         {% for thread in threads %}
+             <tr>
+                    <td class="tabledataleft">Thread</td>
+                    <td class="tabledataleft">{{thread[0]}}</td>
+                    <td class="tabledataleft">{{thread[1]}}</td>
+
+                </tr>
+         {% endfor %}
+
       </table>
     <p>&nbsp</p>
 	</section>
