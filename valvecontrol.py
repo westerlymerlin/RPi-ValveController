@@ -12,9 +12,9 @@ from logmanager import logger
 logger.info('Application starting')
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
-channellist = [23, 17, 13, 19, 18, 27, 9, 24, 22, 11, 21, 26, 20]
+channellist = [23, 17, 13, 19, 18, 27, 9, 24, 22, 11, 21, 26, 20, 12]
 GPIO.setup(channellist, GPIO.OUT)
-GPIO.setup(12, GPIO.OUT)
+GPIO.output(channellist, 0)
 
 valves = [
     {
