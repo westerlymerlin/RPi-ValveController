@@ -95,7 +95,7 @@ def showgelogs():
 def showslogs():
     """Show the system log"""
     cputemperature = read_cpu_temperature()
-    log = subprocess.Popen('journalctl -n 200', shell=True,
+    log = subprocess.Popen('/bin/journalctl -n 200', shell=True,
                            stdout=subprocess.PIPE).stdout.read().decode(encoding='utf-8')
     logs = log.split('\n')
     logs.reverse()
