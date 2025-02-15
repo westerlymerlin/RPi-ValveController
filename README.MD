@@ -21,12 +21,6 @@
 
 `{'valveN', 'close'}` Close valve N
 
-`{'pipetteN', 'load'}` open the valve next to the tank to fill the pipette N    
-
-`{'pipetteN', 'unload'}` open the valve next to the line to empty the pipette N   
-
-`{'pipetteN', 'close'}` close both valves on teh pipette N    
-
 `{'closeallvalves', 1}` close all valves and pipettes   
 
 `{'restart', 'pi'}` Restart the raspberry pi after a 15 second delay   
