@@ -7,9 +7,11 @@
 
 ----------------------------------------------------
 
-`valvecontrol.py`		pyton GPIO routine for setting up and managng valves
-
 `README.pdf`		software description and details how to setup on a Raspberry Pi
+
+Python module documentation can be found in the folder: [docs](./docs/readme.md)
+
+Change log can be found in the file [changelog.txt](./changelog.txt)
 
 `Valve Control Circuit.fzz`     contains the schematics and PCB layout for use in the Fritzing application https://fritzing.org/
 
@@ -20,12 +22,6 @@
 `{'valveN', 'open'}` Open valve N
 
 `{'valveN', 'close'}` Close valve N
-
-`{'pipetteN', 'load'}` open the valve next to the tank to fill the pipette N    
-
-`{'pipetteN', 'unload'}` open the valve next to the line to empty the pipette N   
-
-`{'pipetteN', 'close'}` close both valves on teh pipette N    
 
 `{'closeallvalves', 1}` close all valves and pipettes   
 

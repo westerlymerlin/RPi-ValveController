@@ -2,7 +2,6 @@
 Main valve controller module, operates the valves via the Raspberry Pi GPIO
 """
 
-from time import sleep
 from threading import Timer
 import os
 from RPi import GPIO
@@ -108,28 +107,6 @@ def parsecontrol(item, command):
                     logger.warning('bad valve command')
             else:
                 logger.warning('bad valve number')
-        elif item[:7] == 'pipette':
-            pipette = int(item[7:])
-            if pipette == 1:
-                if command == 'load':
-                    he4pipetteload()
-                elif command == 'unload':
-                    he4pipetteunload()
-                elif command == 'close':
-                    he4pipetteclose()
-                else:
-                    logger.warning('bad pipette command')
-            elif pipette == 2:
-                if command == 'load':
-                    he3pipetteload()
-                elif command == 'unload':
-                    he3pipetteunload()
-                elif command == 'close':
-                    he3pipetteclose()
-                else:
-                    logger.warning('bad pipette command')
-            else:
-                logger.warning('bad pipette number')
         elif item == 'closeallvalves':
             allclose()
         elif item == 'restart':
@@ -164,47 +141,6 @@ def allclose():
     """Close all valves"""
     GPIO.output(channellist, 0)
     logger.info('All Valves Closed')
-
-
-def he3pipetteload():
-    """load the 3He pipette"""
-    valveclose(3)
-    sleep(1)
-    valveopen(4)
-
-
-def he3pipetteclose():
-    """Close the 3He Pipette"""
-    valveclose(3)
-    valveclose(4)
-
-
-def he3pipetteunload():
-    """Unload the 3He pipette"""
-    valveclose(4)
-    sleep(1)
-    valveopen(3)
-
-
-def he4pipetteload():
-    """Load the 4He pipette"""
-    valveclose(2)
-    sleep(1)
-    valveopen(1)
-
-
-def he4pipetteclose():
-    """Close the 4He pipette"""
-    valveclose(2)
-    valveclose(1)
-
-
-def he4pipetteunload():
-    """Unload the 4He pipette"""
-    valveclose(1)
-    sleep(1)
-    valveopen(2)
-
 
 def status(value):
     """Meaningful value name for the specified valve"""
