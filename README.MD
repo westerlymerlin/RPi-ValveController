@@ -7,9 +7,11 @@
 
 ----------------------------------------------------
 
-`valvecontrol.py`		pyton GPIO routine for setting up and managng valves
-
 `README.pdf`		software description and details how to setup on a Raspberry Pi
+
+Python module documentation can be found in the folder: [docs](./docs/readme.md)
+
+Change log can be found in the file [changelog.txt](./changelog.txt)
 
 `Valve Control Circuit.fzz`     contains the schematics and PCB layout for use in the Fritzing application https://fritzing.org/
 

@@ -11,6 +11,7 @@ VERSION = '2.1.4'
 def initialise():
     """Setup the settings structure with default values"""
     isettings = {'LastSave': '01/01/2000 00:00:01',
+                 'app-name': 'UCL Helium Line Valve Controller',
                  'api-key': 'change-me',
                  'logfilepath': './logs/valvecontroller.log',
                  'logappname': 'Valve-Controller-Py',
