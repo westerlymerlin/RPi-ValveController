@@ -30,5 +30,5 @@ LogFile = RotatingFileHandler(settings['logfilepath'], maxBytes=1048576, backupC
 formatter = logging.Formatter('%(asctime)s, %(name)s, %(levelname)s : %(message)s')
 LogFile.setFormatter(formatter)
 logger.addHandler(LogFile)
-logger.info('Runnng Python %s on %s', sys.version, sys.platform)
+logger.info('Running Python %s on %s', sys.version, sys.platform)
 logger.info('Logging level set to: %s', settings['loglevel'].upper())
