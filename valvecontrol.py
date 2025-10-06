@@ -63,7 +63,7 @@ valves = [
         'id': 5,
         'gpio': channellist[4],
         'description': 'port 1',
-        'excluded': 8
+        'excluded': 1
     },
     {
         'id': 6,
@@ -148,7 +148,7 @@ def parsecontrol(item, command):
             allclose()
         elif item == 'restart':
             if command == 'pi':
-                logger.warning('Restart command recieved: system will restart in 15 seconds')
+                logger.warning('Restart command received: system will restart in 15 seconds')
                 timerthread = Timer(15, reboot)
                 timerthread.start()
     except ValueError:
@@ -172,9 +172,10 @@ def valveopen(valveid):
     valve = [valve for valve in valves if valve['id'] == valveid]
     if GPIO.input([valvex for valvex in valves if valvex['id'] == valve[0]['excluded']][0]['gpio']) == 1:
         logger.warning('cannot open valve as the excluded one is also open valve %s', valveid)
-    else:
-        GPIO.output(valve[0]['gpio'], 1)
-        logger.info('Valve %s opened', valveid)
+        if valve[0]['excluded'] != 5:
+            return
+    GPIO.output(valve[0]['gpio'], 1)
+    logger.info('Valve %s opened', valveid)
 
 
 def valveclose(valveid):

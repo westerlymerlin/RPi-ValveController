@@ -17,7 +17,7 @@ Change log can be found in the file [changelog.txt](./changelog.txt)
 
 ### JSON Commands
  
-`{'status', '1'}` Return the ststus of all valves
+`{'status', '1'}` Return the status of all valves
 
 `{'valveN', 'open'}` Open valve N
 
