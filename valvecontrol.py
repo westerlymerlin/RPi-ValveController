@@ -63,25 +63,25 @@ valves = [
         'id': 5,
         'gpio': channellist[4],
         'description': 'port 1',
-        'excluded': 1
+        'excluded': 10
     },
     {
         'id': 6,
         'gpio': channellist[5],
         'description': 'ion pump',
-        'excluded': 5
+        'excluded': 0
     },
     {
         'id': 7,
         'gpio': channellist[6],
         'description': 'gas analyser',
-        'excluded': 5
+        'excluded': 0
     },
     {
         'id': 8,
         'gpio': channellist[7],
         'description': 'gallery A',
-        'excluded': 5
+        'excluded': 0
     },
     {
         'id': 10,
@@ -93,19 +93,19 @@ valves = [
         'id': 11,
         'gpio': channellist[9],
         'description': 'getter',
-        'excluded': 5
+        'excluded': 0
     },
     {
         'id': 12,
         'gpio': channellist[10],
         'description': 'buffer tank',
-        'excluded': 5
+        'excluded': 0
     },
     {
         'id': 13,
         'gpio': channellist[11],
         'description': 'turbo pump',
-        'excluded': 5
+        'excluded': 0
     }
 ]
 
@@ -170,9 +170,9 @@ def valveopen(valveid):
         valveid (int): The unique identifier of the valve to be opened.
     """
     valve = [valve for valve in valves if valve['id'] == valveid]
-    if GPIO.input([valvex for valvex in valves if valvex['id'] == valve[0]['excluded']][0]['gpio']) == 1:
-        logger.warning('cannot open valve as the excluded one is also open valve %s', valveid)
-        if valve[0]['excluded'] != 5:
+    if valve[0]['excluded'] != 0:
+        if GPIO.input([valvex for valvex in valves if valvex['id'] == valve[0]['excluded']][0]['gpio']) == 1:
+            logger.warning('cannot open valve as the excluded one is also open valve %s', valveid)
             return
     GPIO.output(valve[0]['gpio'], 1)
     logger.info('Valve %s opened', valveid)
